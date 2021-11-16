@@ -11,7 +11,7 @@
  * OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
- 
+#define _USE_MATH_DEFINES
 #include <stdio.h>
 #include <cstring>
 #include <cmath>
@@ -1319,11 +1319,27 @@ private:
 		}
 	}
 };
-
-extern "C" Vocoder* create() {
+#if !defined(_WIN32)
+extern "C" Vocoder* create()
+{
     return new VocoderPlugin;
 }
 
-extern "C" void destroy(Vocoder* p) {
+extern "C" void destroy(Vocoder* p)
+{
     delete p;
 }
+#endif
+#if defined(_WIN32)
+extern "C" {
+__declspec(dllexport) Vocoder* __cdecl create()
+{
+	return new VocoderPlugin;
+}
+
+__declspec(dllexport) void __cdecl destroy(Vocoder* p)
+{
+	delete p;
+}
+}
+#endif

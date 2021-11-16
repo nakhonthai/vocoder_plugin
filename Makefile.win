@@ -1,0 +1,23 @@
+CXX    := x86_64-w64-mingw32.static-g++
+CC     := x86_64-w64-mingw32.static-gcc
+CFLAGS := -g -Wall -fPIC -std=c++11 -I/mnt/data/src/mxe/usr/include -L/mnt/data/src/mxe/usr/lib64
+NAME=vocoder_plugin.winnt.x86_64
+
+OBJECTS = ambe3600x2400.o ambe3600x2450.o ecc.o mbelib.o vocoder_plugin.o
+
+.PHONY: all
+all:		$(NAME)
+
+$(NAME):	$(OBJECTS)
+		$(CXX) $(CFLAGS) -shared -mwindows -o $(NAME) $(OBJECTS) -limbe_vocoder
+
+-include $(OBJECTS:.o=.d)
+
+%.o: %.cpp
+		$(CXX) $(CFLAGS) -c -o $@ $<
+
+.PHONY: clean
+clean:
+		$(RM) $(NAME) *.o *.bak *~
+
+
